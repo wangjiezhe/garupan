@@ -1,4 +1,5 @@
 import scrapy
+from garupan.items import GarupanItem
 
 
 class GamedbsSpider(scrapy.Spider):
@@ -10,8 +11,10 @@ class GamedbsSpider(scrapy.Spider):
         yield from response.follow_all(css=".dblst a", callback=self.parse_character)
 
     def parse_character(self, response):
+        name = response.css("title::text").re(r"(.+) \|.+")[0]
         for img in response.css("ul.imgbox li a.hvr-grow"):
-            yield {
-                "title": img.attrib["title"],
-                "img_url": img.attrib["href"]
-            }
+            item = GarupanItem()
+            item["name"] = name
+            item["description"] = img.attrib["title"]
+            item["image_urls"] = [img.attrib["href"]]
+            yield item
