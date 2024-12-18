@@ -7,9 +7,7 @@ import scrapy
 
 
 class GarupanItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    name = scrapy.Field()
-    description = scrapy.Field()
+    name = scrapy.Field()  # 角色名称
+    description = scrapy.Field()  # 服饰名称
     image_urls = scrapy.Field()
     images = scrapy.Field()

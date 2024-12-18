@@ -8,9 +8,10 @@ import hashlib
 from io import BytesIO
 
 # useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
+from itemadapter.adapter import ItemAdapter
 from PIL.PngImagePlugin import PngInfo
-from scrapy.pipelines.images import ImageException, ImagesPipeline, _md5sum
+from scrapy.pipelines.files import _md5sum
+from scrapy.pipelines.images import ImageException, ImagesPipeline
 from scrapy.utils.python import to_bytes
 
 
@@ -27,7 +28,7 @@ class GarupanPipeline(ImagesPipeline):
                 buf,
                 info,
                 meta={"width": width, "height": height},
-                headers={"Content-Type": "image/png"},
+                headers={"Content-Type": "image/png"},  # 此处改为保存 png 图片
             )
         assert checksum is not None
         return checksum
@@ -49,7 +50,9 @@ class GarupanPipeline(ImagesPipeline):
         )
         yield path, image, buf
 
+    # 传入 item 参数
     def convert_image(self, image, size=None, *, response_body, item):
+        # 添加服饰名称到注释
         metadata = PngInfo()
         # for k, v in image.text.items():
         #     metadata.add_text(k, v)
